@@ -7207,33 +7207,33 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                            # ➤ 🪽 Wing Emoji (+DI near Kijun up-cross)
-                wing_mask = intraday["wing_emoji"] == "🪽"
-                fig.add_trace(go.Scatter(
-                    x=intraday.loc[wing_mask, "TimeIndex"],
-                    y=intraday.loc[wing_mask, "F_numeric"] + 35,
-                    mode="text",
-                    text=intraday.loc[wing_mask, "wing_emoji"],
-                    textposition="top center",
-                    textfont=dict(size=26, color="green"),
-                    name="Wing 🪽",
-                    hovertemplate="Time: %{x}<br>F%: %{y:.2f}<extra>+DI & Kijun Up</extra>"
-                ), row=1, col=1)
-              # ➤ 🐦‍⬛ Bat Emoji (-DI near Kijun down-cross)
+            #                 # ➤ 🪽 Wing Emoji (+DI near Kijun up-cross)
+            #     wing_mask = intraday["wing_emoji"] == "🪽"
+            #     fig.add_trace(go.Scatter(
+            #         x=intraday.loc[wing_mask, "TimeIndex"],
+            #         y=intraday.loc[wing_mask, "F_numeric"] + 35,
+            #         mode="text",
+            #         text=intraday.loc[wing_mask, "wing_emoji"],
+            #         textposition="top center",
+            #         textfont=dict(size=26, color="green"),
+            #         name="Wing 🪽",
+            #         hovertemplate="Time: %{x}<br>F%: %{y:.2f}<extra>+DI & Kijun Up</extra>"
+            #     ), row=1, col=1)
+            #   # ➤ 🐦‍⬛ Bat Emoji (-DI near Kijun down-cross)
 
 
 
-                bat_mask = intraday["bat_emoji"] == "🪽"
-                fig.add_trace(go.Scatter(
-                    x=intraday.loc[bat_mask, "TimeIndex"],
-                    y=intraday.loc[bat_mask, "F_numeric"] - 35,
-                    mode="text",
-                    text=intraday.loc[bat_mask, "bat_emoji"],
-                    textposition="bottom center",
-                    textfont=dict(size=26, color="red"),
-                    name="Bat 🪽",
-                    hovertemplate="Time: %{x}<br>F%: %{y:.2f}<extra>-DI & Kijun Down</extra>"
-                ), row=1, col=1)
+            #     bat_mask = intraday["bat_emoji"] == "🪽"
+            #     fig.add_trace(go.Scatter(
+            #         x=intraday.loc[bat_mask, "TimeIndex"],
+            #         y=intraday.loc[bat_mask, "F_numeric"] - 35,
+            #         mode="text",
+            #         text=intraday.loc[bat_mask, "bat_emoji"],
+            #         textposition="bottom center",
+            #         textfont=dict(size=26, color="red"),
+            #         name="Bat 🪽",
+            #         hovertemplate="Time: %{x}<br>F%: %{y:.2f}<extra>-DI & Kijun Down</extra>"
+            #     ), row=1, col=1)
 
 
 
@@ -7396,7 +7396,7 @@ if st.sidebar.button("Run Analysis"):
                     y=intraday.loc[mask_40ish, "F_numeric"] + 89,
                     mode="markers",
                     marker_symbol="star",
-                    marker_size=18,
+                    marker_size=13,
                     marker_color="gold",
                     name="40ish Reversal",
                     text=intraday.loc[mask_40ish, "40ish"],
@@ -7405,40 +7405,40 @@ if st.sidebar.button("Run Analysis"):
                 )
                 fig.add_trace(scatter_40ish, row=1, col=1)
 
-                up_high_mask = intraday["Y_High_Cross"] == "✈️"
-                up_high_trace = go.Scatter(
-                    x=intraday.loc[up_high_mask, "Time"],
-                    y=intraday.loc[up_high_mask, "F_numeric"] + 40,
-                    mode="text",
-                    text=intraday.loc[up_high_mask, "Y_High_Cross"],
-                    textposition="top center",
-                    textfont=dict(size=28),
-                    name="Cross Above Y-High (✈️)"
-                )
+                # up_high_mask = intraday["Y_High_Cross"] == "✈️"
+                # up_high_trace = go.Scatter(
+                #     x=intraday.loc[up_high_mask, "Time"],
+                #     y=intraday.loc[up_high_mask, "F_numeric"] + 40,
+                #     mode="text",
+                #     text=intraday.loc[up_high_mask, "Y_High_Cross"],
+                #     textposition="top center",
+                #     textfont=dict(size=28),
+                #     name="Cross Above Y-High (✈️)"
+                # )
 
 
-                breach_mask = intraday["Y_Low_Cross"] == "🛟"
-                breach_trace = go.Scatter(
-                    x=intraday.loc[breach_mask, "Time"],
-                    y=intraday.loc[breach_mask, "F_numeric"] - 40,  # Offset downward for clarity
-                    mode="text",
-                    text=intraday.loc[breach_mask, "Y_Low_Cross"],
-                    textposition="bottom center",
-                    textfont=dict(size=28),
-                    name="Cross Below Y-Low (🛟)"
-                )
+                # breach_mask = intraday["Y_Low_Cross"] == "🛟"
+                # breach_trace = go.Scatter(
+                #     x=intraday.loc[breach_mask, "Time"],
+                #     y=intraday.loc[breach_mask, "F_numeric"] - 40,  # Offset downward for clarity
+                #     mode="text",
+                #     text=intraday.loc[breach_mask, "Y_Low_Cross"],
+                #     textposition="bottom center",
+                #     textfont=dict(size=28),
+                #     name="Cross Below Y-Low (🛟)"
+                # )
 
 
-                recovery_mask = intraday["Y_Low_Cross"] == "🚣🏽"
-                recovery_trace = go.Scatter(
-                    x=intraday.loc[recovery_mask, "Time"],
-                    y=intraday.loc[recovery_mask, "F_numeric"] + 40,  # Offset for visibility
-                    mode="text",
-                    text=intraday.loc[recovery_mask, "Y_Low_Cross"],
-                    textposition="top center",
-                    textfont=dict(size=28),
-                    name="Cross Above Y-Low (🚣🏽)"
-                )
+                # recovery_mask = intraday["Y_Low_Cross"] == "🚣🏽"
+                # recovery_trace = go.Scatter(
+                #     x=intraday.loc[recovery_mask, "Time"],
+                #     y=intraday.loc[recovery_mask, "F_numeric"] + 40,  # Offset for visibility
+                #     mode="text",
+                #     text=intraday.loc[recovery_mask, "Y_Low_Cross"],
+                #     textposition="top center",
+                #     textfont=dict(size=28),
+                #     name="Cross Above Y-Low (🚣🏽)"
+                # )
 
                 astronaut_points = intraday[intraday["Astronaut_Emoji"] == "👨🏽‍🚀"]
 
