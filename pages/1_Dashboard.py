@@ -3330,86 +3330,86 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-#                     tenkan_line = go.Scatter(
-#                         x=intraday["Time"],
-#                         y=intraday["Tenkan_F"],
-#                         mode="lines",
-#                         line=dict(color="red", width=2, dash="dot"),
-#                         name="Tenkan (F%)"
-#                     )
-#                     fig.add_trace(tenkan_line, row=1, col=1)
+                    tenkan_line = go.Scatter(
+                        x=intraday["Time"],
+                        y=intraday["Tenkan_F"],
+                        mode="lines",
+                        line=dict(color="red", width=2, dash="dot"),
+                        name="Tenkan (F%)"
+                    )
+                    fig.add_trace(tenkan_line, row=1, col=1)
 
 
 # # ------------------------------------------------------------------------------------------------------------------------
 
 
-#                     # Mask for Tenkan-Kijun Crosses
-#                     mask_tk_sun = intraday["Tenkan_Kijun_Cross"] == "🌞"
-#                     mask_tk_moon = intraday["Tenkan_Kijun_Cross"] == "🌙"
+                    # Mask for Tenkan-Kijun Crosses
+                    mask_tk_sun = intraday["Tenkan_Kijun_Cross"] == "🌞"
+                    mask_tk_moon = intraday["Tenkan_Kijun_Cross"] == "🌙"
 
-#                     # 🌞 Bullish Tenkan-Kijun Cross (Sun Emoji)
-#                     scatter_tk_sun = go.Scatter(
-#                         x=intraday.loc[mask_tk_sun, "Time"],
-#                         y=intraday.loc[mask_tk_sun, "F_numeric"] + 244,  # Offset for visibility
-#                         mode="text",
-#                         text="🌞",
-#                         textposition="top center",
-#                         textfont=dict(size=55),
-#                         name="Tenkan-Kijun Bullish Cross",
-#                         hovertemplate="Time: %{x}<br>F%: %{y}<br>Tenkan Crossed Above Kijun<extra></extra>"
-#                     )
+                    # 🌞 Bullish Tenkan-Kijun Cross (Sun Emoji)
+                    scatter_tk_sun = go.Scatter(
+                        x=intraday.loc[mask_tk_sun, "Time"],
+                        y=intraday.loc[mask_tk_sun, "F_numeric"] + 244,  # Offset for visibility
+                        mode="text",
+                        text="🌞",
+                        textposition="top center",
+                        textfont=dict(size=55),
+                        name="Tenkan-Kijun Bullish Cross",
+                        hovertemplate="Time: %{x}<br>F%: %{y}<br>Tenkan Crossed Above Kijun<extra></extra>"
+                    )
 
-#                     # 🌙 Bearish Tenkan-Kijun Cross (Moon Emoji)
-#                     scatter_tk_moon = go.Scatter(
-#                         x=intraday.loc[mask_tk_moon, "Time"],
-#                         y=intraday.loc[mask_tk_moon, "F_numeric"] - 244,  # Offset for visibility
-#                         mode="text",
-#                         text="🌙",
-#                         textposition="bottom center",
-#                         textfont=dict(size=55),
-#                         name="Tenkan-Kijun Bearish Cross",
-#                         hovertemplate="Time: %{x}<br>F%: %{y}<br>Tenkan Crossed Below Kijun<extra></extra>"
-#                     )
+                    # 🌙 Bearish Tenkan-Kijun Cross (Moon Emoji)
+                    scatter_tk_moon = go.Scatter(
+                        x=intraday.loc[mask_tk_moon, "Time"],
+                        y=intraday.loc[mask_tk_moon, "F_numeric"] - 244,  # Offset for visibility
+                        mode="text",
+                        text="🌙",
+                        textposition="bottom center",
+                        textfont=dict(size=55),
+                        name="Tenkan-Kijun Bearish Cross",
+                        hovertemplate="Time: %{x}<br>F%: %{y}<br>Tenkan Crossed Below Kijun<extra></extra>"
+                    )
 
-#                     # Add to the F% Plot
-#                     fig.add_trace(scatter_tk_sun, row=1, col=1)
-#                     fig.add_trace(scatter_tk_moon, row=1, col=1)
+                    # Add to the F% Plot
+                    fig.add_trace(scatter_tk_sun, row=1, col=1)
+                    fig.add_trace(scatter_tk_moon, row=1, col=1)
 
-#                     # ✅ Yesterday's Open - Grey Dashed Line (F% Scale)
-#                     y_open_f_line = go.Scatter(
-#                         x=intraday["Time"],
-#                         y=[intraday["Yesterday Open F%"].iloc[0]] * len(intraday),
-#                         mode="lines",
-#                         line=dict(color="grey", dash="dash"),
-#                         name="Yesterday Open (F%)"
-#                     )
+                    # ✅ Yesterday's Open - Grey Dashed Line (F% Scale)
+                    y_open_f_line = go.Scatter(
+                        x=intraday["Time"],
+                        y=[intraday["Yesterday Open F%"].iloc[0]] * len(intraday),
+                        mode="lines",
+                        line=dict(color="grey", dash="dash"),
+                        name="Yesterday Open (F%)"
+                    )
 
-#                     # ✅ Yesterday's High - Blue Dashed Line (F% Scale)
-#                     y_high_f_line = go.Scatter(
-#                         x=intraday["Time"],
-#                         y=[intraday["Yesterday High F%"].iloc[0]] * len(intraday),
-#                         mode="lines",
-#                         line=dict(color="green", dash="dash"),
-#                         name="Yesterday High (F%)"
-#                     )
+                    # ✅ Yesterday's High - Blue Dashed Line (F% Scale)
+                    y_high_f_line = go.Scatter(
+                        x=intraday["Time"],
+                        y=[intraday["Yesterday High F%"].iloc[0]] * len(intraday),
+                        mode="lines",
+                        line=dict(color="green", dash="dash"),
+                        name="Yesterday High (F%)"
+                    )
 
-#                     # ✅ Yesterday's Low - Green Dashed Line (F% Scale)
-#                     y_low_f_line = go.Scatter(
-#                         x=intraday["Time"],
-#                         y=[intraday["Yesterday Low F%"].iloc[0]] * len(intraday),
-#                         mode="lines",
-#                         line=dict(color="red", dash="dash"),
-#                         name="Yesterday Low (F%)"
-#                     )
+                    # ✅ Yesterday's Low - Green Dashed Line (F% Scale)
+                    y_low_f_line = go.Scatter(
+                        x=intraday["Time"],
+                        y=[intraday["Yesterday Low F%"].iloc[0]] * len(intraday),
+                        mode="lines",
+                        line=dict(color="red", dash="dash"),
+                        name="Yesterday Low (F%)"
+                    )
 
-#                     # ✅ Yesterday's Close - Red Dashed Line (F% Scale) (Always at 0)
-#                     y_close_f_line = go.Scatter(
-#                         x=intraday["Time"],
-#                         y=[0] * len(intraday),
-#                         mode="lines",
-#                         line=dict(color="blue", dash="dash"),
-#                         name="Yesterday Close (F%)"
-#                     )
+                    # ✅ Yesterday's Close - Red Dashed Line (F% Scale) (Always at 0)
+                    y_close_f_line = go.Scatter(
+                        x=intraday["Time"],
+                        y=[0] * len(intraday),
+                        mode="lines",
+                        line=dict(color="blue", dash="dash"),
+                        name="Yesterday Close (F%)"
+                    )
 
 
 #                   # (D) TD Trap Arrows - Only First Sell TD Trap
@@ -3438,96 +3438,96 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-#            # BBW Tight Compression (🐝) – 3 of last 5 bars under threshold
-#                     mask_bbw_tight = intraday["BBW_Tight_Emoji"] == "🐝"
-#                     scatter_bbw_tight = go.Scatter(
-#                         x=intraday.loc[mask_bbw_tight, "Time"],
-#                         y=intraday.loc[mask_bbw_tight, "F_numeric"] + 13,  # Offset upward
-#                         mode="text",
-#                         text=["🐝"] * mask_bbw_tight.sum(),
-#                         textposition="top center",
-#                         textfont=dict(size=21),
-#                         name="BBW Tight Compression (🐝)",
-#                         hovertemplate="Time: %{x}<br>F%: %{y:.2f}<br>BBW Tight Compression (🐝)<extra></extra>"
-#                     )
+           # BBW Tight Compression (🐝) – 3 of last 5 bars under threshold
+                    mask_bbw_tight = intraday["BBW_Tight_Emoji"] == "🐝"
+                    scatter_bbw_tight = go.Scatter(
+                        x=intraday.loc[mask_bbw_tight, "Time"],
+                        y=intraday.loc[mask_bbw_tight, "F_numeric"] + 13,  # Offset upward
+                        mode="text",
+                        text=["🐝"] * mask_bbw_tight.sum(),
+                        textposition="top center",
+                        textfont=dict(size=21),
+                        name="BBW Tight Compression (🐝)",
+                        hovertemplate="Time: %{x}<br>F%: %{y:.2f}<br>BBW Tight Compression (🐝)<extra></extra>"
+                    )
 
-#                     fig.add_trace(scatter_bbw_tight, row=1, col=1)
+                    fig.add_trace(scatter_bbw_tight, row=1, col=1)
 
 
 
 
 #  # 🟢 BBW Expansion
 
-#                     mask_bbw_alert = intraday["BBW Alert"] != ""
+                    mask_bbw_alert = intraday["BBW Alert"] != ""
 
-#                     scatter_bbw_alert = go.Scatter(
-#                         x=intraday.loc[mask_bbw_alert, "Time"],
-#                         y=intraday.loc[mask_bbw_alert, "F_numeric"] + 8,  # Offset above F%
-#                         mode="text",
-#                         text=intraday.loc[mask_bbw_alert, "BBW Alert"],
-#                         textposition="top center",
-#                         textfont=dict(size=13),
-#                         name="BBW Expansion Alert",
-#                         hovertemplate="Time: %{x}<br>BBW Ratio: %{customdata:.2f}<extra></extra>",
-#                         customdata=intraday.loc[mask_bbw_alert, "BBW_Ratio"]
-#                     )
+                    scatter_bbw_alert = go.Scatter(
+                        x=intraday.loc[mask_bbw_alert, "Time"],
+                        y=intraday.loc[mask_bbw_alert, "F_numeric"] + 8,  # Offset above F%
+                        mode="text",
+                        text=intraday.loc[mask_bbw_alert, "BBW Alert"],
+                        textposition="top center",
+                        textfont=dict(size=13),
+                        name="BBW Expansion Alert",
+                        hovertemplate="Time: %{x}<br>BBW Ratio: %{customdata:.2f}<extra></extra>",
+                        customdata=intraday.loc[mask_bbw_alert, "BBW_Ratio"]
+                    )
 
-#                     fig.add_trace(scatter_bbw_alert, row=1, col=1)
-
-
-#  #  🟢 ADX Expansion
+                    fig.add_trace(scatter_bbw_alert, row=1, col=1)
 
 
-#           # Mask for ADX Alerts (♨️, 🧨)
-#                     mask_adx_alert = intraday["ADX_Alert"] != ""
-
-#                     scatter_adx_alert = go.Scatter(
-#                         x=intraday.loc[mask_adx_alert, "Time"],
-#                         y=intraday.loc[mask_adx_alert, "F_numeric"] + 55,  # Offset for visibility
-#                         mode="text",
-#                         text=intraday.loc[mask_adx_alert, "ADX_Alert"],
-#                         textposition="bottom center",
-#                         textfont=dict(size=13),
-#                         name="ADX Expansion Alert",
-#                         hovertemplate="Time: %{x}<br>ADX Ratio: %{customdata:.2f}<extra></extra>",
-#                         customdata=intraday.loc[mask_adx_alert, "ADX_Ratio"]
-#                     )
-
-#                     fig.add_trace(scatter_adx_alert, row=1, col=1)
+ #  🟢 ADX Expansion
 
 
+          # Mask for ADX Alerts (♨️, 🧨)
+                    mask_adx_alert = intraday["ADX_Alert"] != ""
 
-# # 🟢  STD Expansion  (🐦‍🔥)
-#                     mask_std_alert = intraday["STD_Alert"] != ""
+                    scatter_adx_alert = go.Scatter(
+                        x=intraday.loc[mask_adx_alert, "Time"],
+                        y=intraday.loc[mask_adx_alert, "F_numeric"] + 55,  # Offset for visibility
+                        mode="text",
+                        text=intraday.loc[mask_adx_alert, "ADX_Alert"],
+                        textposition="bottom center",
+                        textfont=dict(size=13),
+                        name="ADX Expansion Alert",
+                        hovertemplate="Time: %{x}<br>ADX Ratio: %{customdata:.2f}<extra></extra>",
+                        customdata=intraday.loc[mask_adx_alert, "ADX_Ratio"]
+                    )
 
-#                     scatter_std_alert = go.Scatter(
-#                         x=intraday.loc[mask_std_alert, "Time"],
-#                         y=intraday.loc[mask_std_alert, "F_numeric"] + 55,  # Offset above F%
-#                         mode="text",
-#                         text=intraday.loc[mask_std_alert, "STD_Alert"],
-#                         textposition="top center",
-#                         textfont=dict(size=21),
-#                         name="F% STD Expansion",
-#                         hovertemplate="Time: %{x}<br>F%: %{y}<br>STD Alert: %{text}<extra></extra>"
-#                     )
+                    fig.add_trace(scatter_adx_alert, row=1, col=1)
 
-#                     fig.add_trace(scatter_std_alert, row=1, col=1)
 
-# #  🟢   ATR Expansion
-#                     mask_atr_alert = intraday["ATR_Exp_Alert"] != ""
 
-#                     atr_alert_scatter = go.Scatter(
-#                         x=intraday.loc[mask_atr_alert, "Time"],
-#                         y=intraday.loc[mask_atr_alert, "F_numeric"]  + 34,  # place below F%
-#                         mode="text",
-#                         text=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"],
-#                         textfont=dict(size=21),
-#                         name="ATR Expansion",
-#                         hoverinfo="text",
-#                         hovertext=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"]
-#                     )
+# 🟢  STD Expansion  (🐦‍🔥)
+                    mask_std_alert = intraday["STD_Alert"] != ""
 
-#                     fig.add_trace(atr_alert_scatter, row=1, col=1)
+                    scatter_std_alert = go.Scatter(
+                        x=intraday.loc[mask_std_alert, "Time"],
+                        y=intraday.loc[mask_std_alert, "F_numeric"] + 55,  # Offset above F%
+                        mode="text",
+                        text=intraday.loc[mask_std_alert, "STD_Alert"],
+                        textposition="top center",
+                        textfont=dict(size=21),
+                        name="F% STD Expansion",
+                        hovertemplate="Time: %{x}<br>F%: %{y}<br>STD Alert: %{text}<extra></extra>"
+                    )
+
+                    fig.add_trace(scatter_std_alert, row=1, col=1)
+
+#  🟢   ATR Expansion
+                    mask_atr_alert = intraday["ATR_Exp_Alert"] != ""
+
+                    atr_alert_scatter = go.Scatter(
+                        x=intraday.loc[mask_atr_alert, "Time"],
+                        y=intraday.loc[mask_atr_alert, "F_numeric"]  + 34,  # place below F%
+                        mode="text",
+                        text=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"],
+                        textfont=dict(size=21),
+                        name="ATR Expansion",
+                        hoverinfo="text",
+                        hovertext=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"]
+                    )
+
+                    fig.add_trace(atr_alert_scatter, row=1, col=1)
 
 # 🟢 TD SUPPLY
 
