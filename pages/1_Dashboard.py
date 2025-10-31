@@ -3395,22 +3395,23 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                        # Compute dynamic MIDAS on your intraday dataframe
-                    intraday = add_dynamic_midas(intraday, price_col="Close", vol_col="Volume", time_col="Time")
+                    # Use the same series as your chart (F_numeric), not Close
+                    intraday["Volume"] = intraday["Volume"].replace(0, 1e-9)  # avoid zero-volume breaks
+                    intraday = add_dynamic_midas(intraday, price_col="F_numeric", vol_col="Volume", time_col="Time")
 
-                    # === Plot Dynamic MIDAS (continuous) =========================================
+                    # Plot on the same axis as your F_numeric price
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_LowAnchor"],
-                        mode="lines", name="MIDAS (from Low)",
+                        mode="lines", name="MIDAS Bull (from Low)",
                         line=dict(width=2), connectgaps=True,
-                        hovertemplate="Time: %{x}<br>MIDAS (from Low): %{y:.2f}<extra></extra>"
+                        hovertemplate="Time: %{x}<br>MIDAS Bull: %{y:.2f}<extra></extra>"
                     ), row=1, col=1)
 
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_HighAnchor"],
-                        mode="lines", name="MIDAS (from High)",
+                        mode="lines", name="MIDAS Bear (from High)",
                         line=dict(width=2, dash="dash"), connectgaps=True,
-                        hovertemplate="Time: %{x}<br>MIDAS (from High): %{y:.2f}<extra></extra>"
+                        hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>"
                     ), row=1, col=1)
 
 
