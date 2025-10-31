@@ -3340,6 +3340,32 @@ if st.sidebar.button("Run Analysis"):
 
 
 
+                    # === MIDAS overlays (Bull/Bear) ==================================
+                    # Assumes you've already added MIDAS_Bull / MIDAS_Bear columns to `intraday`.
+
+                    if "MIDAS_Bull" in intraday.columns and intraday["MIDAS_Bull"].notna().any():
+                        midas_bull_trace = go.Scatter(
+                            x=intraday["Time"],
+                            y=intraday["MIDAS_Bull"],
+                            mode="lines",
+                            name="MIDAS Bull",
+                            line=dict(width=2, dash="solid"),
+                            connectgaps=True,
+                            hovertemplate="Time: %{x}<br>MIDAS Bull: %{y:.2f}<extra></extra>",
+                        )
+                        fig.add_trace(midas_bull_trace, row=1, col=1)
+
+                    if "MIDAS_Bear" in intraday.columns and intraday["MIDAS_Bear"].notna().any():
+                        midas_bear_trace = go.Scatter(
+                            x=intraday["Time"],
+                            y=intraday["MIDAS_Bear"],
+                            mode="lines",
+                            name="MIDAS Bear",
+                            line=dict(width=2, dash="dash"),
+                            connectgaps=True,
+                            hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>",
+                        )
+                        fig.add_trace(midas_bear_trace, row=1, col=1)
 
 
 
@@ -3638,7 +3664,7 @@ if st.sidebar.button("Run Analysis"):
                             mode="text",
                             text=["⎯"] * tdst_buy_mask.sum(),
                             textposition="middle center",
-                            textfont=dict(size=24, color="green"),
+                            textfont=dict(size=28, color="green"),
                             name="Buy TDST",
                             hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                         ),
@@ -3653,7 +3679,7 @@ if st.sidebar.button("Run Analysis"):
                             mode="text",
                             text=["⎯"] * tdst_sell_mask.sum(),
                             textposition="middle center",
-                            textfont=dict(size=24, color="red"),
+                            textfont=dict(size=28, color="red"),
                             name="Sell TDST",
                             hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                         ),
