@@ -3446,7 +3446,7 @@ if st.sidebar.button("Run Analysis"):
                         mode="text",
                         text=["🐝"] * mask_bbw_tight.sum(),
                         textposition="top center",
-                        textfont=dict(size=21),
+                        textfont=dict(size=13),
                         name="BBW Tight Compression (🐝)",
                         hovertemplate="Time: %{x}<br>F%: %{y:.2f}<br>BBW Tight Compression (🐝)<extra></extra>"
                     )
