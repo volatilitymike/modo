@@ -3410,7 +3410,7 @@ if st.sidebar.button("Run Analysis"):
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_HighAnchor"],
                         mode="lines", name="MIDAS Bear (from High)",
-                        line=dict(width=1.2, color="#ef4444", dash="dash", connectgaps=True,
+                        line=dict(width=1.2, color="#ef4444", dash="dash"), connectgaps=True,
                         hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>"
                     ), row=1, col=1)
 
