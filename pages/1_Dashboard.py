@@ -2585,6 +2585,65 @@ if st.sidebar.button("Run Analysis"):
                 intraday = detect_new_lows_below_yesterday_low(intraday)
 
 
+                def add_initial_balance_F(intraday):
+                    """
+                    Compute Initial Balance (IB) from 09:30 to 10:30 ET using F_numeric.
+                    Adds:
+                      - 'IB High F%' and 'IB Low F%' (filled from 10:30 through session end)
+                      - 'IB Range F%' (high - low)
+                      - 'IB_Lock_Emoji' (⏱️ at the first bar >= 10:30)
+                    Notes:
+                      - Before 10:30, columns are left empty (NaN/""), since IB isn’t finalized yet.
+                      - Assumes intraday['Time'] is in ET or already localized to session time.
+                    """
+                    import numpy as np
+                    import pandas as pd
+                    from datetime import time
+
+                    # Initialize/clear columns in your style
+                    intraday["IB High F%"] = np.nan
+                    intraday["IB Low F%"] = np.nan
+                    intraday["IB Range F%"] = np.nan
+                    intraday["IB_Lock_Emoji"] = ""
+
+                    # Group by trading date
+                    t = intraday["Time"]
+                    session_dates = (t.dt.tz_localize(None).dt.date
+                                     if getattr(t.dt, "tz", False) else t.dt.date)
+
+                    for day in pd.unique(session_dates):
+                        day_mask = (session_dates == day)
+                        day_df = intraday.loc[day_mask]
+
+                        # 09:30 <= t < 10:30 window
+                        tt = day_df["Time"].dt.time
+                        ib_window = (tt >= time(9, 30)) & (tt < time(10, 30))
+
+                        if not ib_window.any():
+                            continue  # no regular session window found (holiday/partial day)
+
+                        # Compute IB on F_numeric
+                        ib_high = day_df.loc[ib_window, "F_numeric"].max()
+                        ib_low  = day_df.loc[ib_window, "F_numeric"].min()
+
+                        # Bars at/after 10:30
+                        after_lock = (tt >= time(10, 30))
+                        if after_lock.any():
+                            lock_indices = day_df.index[after_lock]
+                            first_lock = lock_indices[0]
+
+                            # Fill for rest of session
+                            intraday.loc[lock_indices, "IB High F%"] = ib_high
+                            intraday.loc[lock_indices, "IB Low F%"]  = ib_low
+                            intraday.loc[lock_indices, "IB Range F%"] = ib_high - ib_low
+
+                            # Mark the exact bar when IB locks
+                            intraday.loc[first_lock, "IB_Lock_Emoji"] = "⏱️"
+
+                    return intraday
+
+                # Apply in your pipeline
+                intraday = add_initial_balance_F(intraday)
 
 
                 def detect_td_supply_cross_rooks(df):
@@ -4244,6 +4303,29 @@ if st.sidebar.button("Run Analysis"):
 
                 # Add to the F% plot (Row 1)
                 fig.add_trace(scatter_cosecant_spike, row=1, col=1)
+                # ── Plot IB lines: dashed yellow, width=1 ─────────────────────────────────────
+                mask_ib_hi = intraday["IB High F%"].notna()
+                mask_ib_lo = intraday["IB Low F%"].notna()
+
+                fig.add_trace(go.Scatter(
+                    x=intraday.loc[mask_ib_hi, "Time"],
+                    y=intraday.loc[mask_ib_hi, "IB High F%"],
+                    mode="lines",
+                    name="IB High (10:30)",
+                    line=dict(color="#facc15", width=1, dash="dash"),
+                    connectgaps=True,
+                    hovertemplate="IB High: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
+
+                fig.add_trace(go.Scatter(
+                    x=intraday.loc[mask_ib_lo, "Time"],
+                    y=intraday.loc[mask_ib_lo, "IB Low F%"],
+                    mode="lines",
+                    name="IB Low (10:30)",
+                    line=dict(color="#facc15", width=1, dash="dash"),
+                    connectgaps=True,
+                    hovertemplate="IB Low: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
 
 
 
