@@ -2997,10 +2997,10 @@ if st.sidebar.button("Run Analysis"):
                     mask_40ish = intraday["40ish"] != ""
                     scatter_40ish = go.Scatter(
                         x=intraday.loc[mask_40ish, "Time"],
-                        y=intraday.loc[mask_40ish, "F_numeric"] +22,
+                        y=intraday.loc[mask_40ish, "F_numeric"] +62,
                         mode="markers",
                         marker_symbol="star",
-                        marker_size=18,
+                        marker_size=13,
                         marker_color="gold",
                         name="40ish Reversal",
                         text=intraday.loc[mask_40ish, "40ish"],
