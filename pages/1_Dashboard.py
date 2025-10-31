@@ -3638,7 +3638,7 @@ if st.sidebar.button("Run Analysis"):
                             mode="text",
                             text=["⎯"] * tdst_buy_mask.sum(),
                             textposition="middle center",
-                            textfont=dict(size=55, color="green"),
+                            textfont=dict(size=24, color="green"),
                             name="Buy TDST",
                             hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                         ),
@@ -3653,7 +3653,7 @@ if st.sidebar.button("Run Analysis"):
                             mode="text",
                             text=["⎯"] * tdst_sell_mask.sum(),
                             textposition="middle center",
-                            textfont=dict(size=55, color="red"),
+                            textfont=dict(size=24, color="red"),
                             name="Sell TDST",
                             hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                         ),
@@ -4301,64 +4301,7 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                # # 1. Calculate 1.618x Fib targets for both TD lines
-                # intraday["Supply_Target"] = intraday["TD Supply Line F"] * 1.618
-                # intraday["Demand_Target"] = intraday["TD Demand Line F"] * 1.618
 
-                # # 2. Check if both F_numeric and the corresponding TD line confirm the breakout
-                # bullish_mask = (intraday["F_numeric"] > intraday["Supply_Target"]) & (intraday["TD Supply Line F"] > 0)
-                # bearish_mask = (intraday["F_numeric"] < intraday["Demand_Target"]) & (intraday["TD Demand Line F"] < 0)
-
-                # # 3. Add emojis to the plot
-                # fig.add_trace(go.Scatter(
-                #     x=intraday.loc[bullish_mask, "Time"],
-                #     y=intraday.loc[bullish_mask, "F_numeric"] + 144,
-                #     mode="text",
-                #     text=["🏝️"] * bullish_mask.sum(),
-                #     textposition="top center",
-                #     textfont=dict(size=34),
-                #     name="Bullish Fib Target (🏝️)",
-                #     hovertemplate="Time: %{x}<br>F%: %{y}<br>Breakout above Fib Target<extra></extra>"
-                # ))
-
-                # fig.add_trace(go.Scatter(
-                #     x=intraday.loc[bearish_mask, "Time"],
-                #     y=intraday.loc[bearish_mask, "F_numeric"] - 143,
-                #     mode="text",
-                #     text=["🌋"] * bearish_mask.sum(),
-                #     textposition="bottom center",
-                #     textfont=dict(size=21),
-                #     name="Bearish Fib Target (🌋)",
-                #     hovertemplate="Time: %{x}<br>F%: %{y}<br>Breakdown below Fib Target<extra></extra>"
-                # ))
-                # # 🏇 Mike rides real VWAP up
-                # mask_vwap_up = intraday["VWAP_Cross_Emoji"] == "🥁"
-                # scatter_vwap_up = go.Scatter(
-                #     x=intraday.loc[mask_vwap_up, "Time"],
-                #     y=intraday.loc[mask_vwap_up, "F_numeric"] +89,
-                #     mode="text",
-                #     text="🏇",
-                #     textposition="top center",
-                #     textfont=dict(size=55, color="blue"),
-                #     name="Mike Rides VWAP 🏇",
-                #     hovertemplate="Time: %{x}<br>F%: %{y}<br>True Bullish VWAP Cross 🏇<extra></extra>"
-                # )
-
-                # # 🎠 Carousel fake-out (bearish VWAP cross)
-                # mask_vwap_down = intraday["VWAP_Cross_Emoji"] == "🎻"
-                # scatter_vwap_down = go.Scatter(
-                #     x=intraday.loc[mask_vwap_down, "Time"],
-                #     y=intraday.loc[mask_vwap_down, "F_numeric"] - 89,
-                #     mode="text",
-                #     text="🎠",
-                #     textposition="bottom center",
-                #     textfont=dict(size=55, color="deeppink"),
-                #     name="Carousel Trap 🎠",
-                #     hovertemplate="Time: %{x}<br>F%: %{y}<br>Bearish VWAP Cross — Carousel Trap 🎠<extra></extra>"
-                # )
-
-                # fig.add_trace(scatter_vwap_up, row=1, col=1)
-                # fig.add_trace(scatter_vwap_down, row=1, col=1)
 
 
                 # Update layout overall
