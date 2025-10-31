@@ -4359,9 +4359,6 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-#"Time","RVOL_5", "BBW_Tight_Emoji","BBW Alert","tdSupplyCrossalert", "Kijun_F_Cross","ADX_Alert","STD_Alert","ATR_Exp_Alert","Tenkan_Kijun_Cross","KumoTwistAlert"
-# "Time", "Close","Opening Price Signal","OPS Transition","Net Price","Net Price Direction","Bounce","Retrace","BBW_Tight_Emoji","RVOL_5","F% BBW", "Day Type", "High of Day","Low of Day", "F%","TD Open","TD Trap","TD CLoP", "40ish","Tenkan_Kijun_Cross","CTOD Alert","Alert_Kijun","Alert_Mid","Wealth Signal","BBW Alert","tdSupplyCrossalert"
-
 
             except Exception as e:
                 st.error(f"Error fetching data for {t}: {e}")
