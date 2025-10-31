@@ -3615,11 +3615,11 @@ if st.sidebar.button("Run Analysis"):
 
                     fig.add_trace(go.Scatter(
                         x=intraday.loc[cloud_mask, "Time"],
-                        y=intraday.loc[cloud_mask, "F_numeric"] + 89,
+                        y=intraday.loc[cloud_mask, "F_numeric"] + 177,
                         mode="text",
                         text=intraday.loc[cloud_mask, "Heaven_Cloud"],
                         textposition="top center",
-                        textfont=dict(size=34),
+                        textfont=dict(size=24),
                         name="Heaven ☁️",
                         hovertemplate="Time: %{x}<br>Price above TD Supply Line<extra></extra>"
                     ), row=1, col=1)
@@ -3647,49 +3647,16 @@ if st.sidebar.button("Run Analysis"):
 
                     fig.add_trace(go.Scatter(
                         x=intraday.loc[drizzle_mask, "Time"],
-                        y=intraday.loc[drizzle_mask, "F_numeric"] + 89,  # Position below the bar
+                        y=intraday.loc[drizzle_mask, "F_numeric"] + 177,  # Position below the bar
                         mode="text",
                         text=intraday.loc[drizzle_mask, "Drizzle_Emoji"],
                         textposition="bottom center",
-                        textfont=dict(size=32),
+                        textfont=dict(size=24),
                         name="Price Dropped Below Demand 🌧️",
                         hovertemplate="Time: %{x}<br>F%: %{y}<br>Crossed Below Demand<extra></extra>"
                     ), row=1, col=1)
 
 
-
-
-#                     # 🪫 Emoji at LOD (Low of Day)
-#                     lod_index = intraday["Low"].idxmin()  # Find the index of the lowest low
-#                     lod_time = intraday.loc[lod_index, "Time"]
-#                     lod_value = intraday.loc[lod_index, "F_numeric"]
-
-#                     fig.add_trace(go.Scatter(
-#                         x=[lod_time],
-#                         y=[lod_value - 55],  # offset below the actual low
-#                         mode="text",
-#                         text=["🪫"],
-#                         textposition="bottom center",
-#                         textfont=dict(size=21),
-#                         name="Low of Day (🪫)",
-#                         hovertemplate="Time: %{x}<br>F%: %{y}<extra></extra>"
-#                     ))
-
-#                     # 🔋 Emoji at HOD (High of Day)
-#                     hod_index = intraday["High"].idxmax()  # Find the index of the highest high
-#                     hod_time = intraday.loc[hod_index, "Time"]
-#                     hod_value = intraday.loc[hod_index, "F_numeric"]
-
-#                     fig.add_trace(go.Scatter(
-#                         x=[hod_time],
-#                         y=[hod_value + 55],  # offset above the actual high
-#                         mode="text",
-#                         text=["🔋"],
-#                         textposition="top center",
-#                         textfont=dict(size=21),
-#                         name="High of Day (🔋)",
-#                         hovertemplate="Time: %{x}<br>F%: %{y}<extra></extra>"
-#                     ))
 
 
                     intraday["F_shift"] = intraday["F_numeric"].shift(1)
