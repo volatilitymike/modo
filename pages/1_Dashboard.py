@@ -3812,7 +3812,7 @@ if st.sidebar.button("Run Analysis"):
                         text=astronaut_points["Astronaut_Emoji"],
                         textposition="top center",
                         name="New Highs 👨🏽‍🚀",
-                        textfont=dict(size=34),
+                        textfont=dict(size=24),
                         showlegend=False
                     )
 
@@ -3830,7 +3830,7 @@ if st.sidebar.button("Run Analysis"):
                         text=astronaut_points["Astronaut_Emoji"],  # Either 👨🏽‍🚀 or 🌒
                         textposition="top center",
                         name="New Highs 🌒",
-                        textfont=dict(size=34),
+                        textfont=dict(size=24),
                         showlegend=False
                     )
 
