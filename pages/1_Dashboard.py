@@ -2464,6 +2464,61 @@ if st.sidebar.button("Run Analysis"):
                 # Apply MIDAS curves
                 intraday = add_midas_bull_bear(intraday)
 
+                def _dynamic_midas_group(g, price_col="Close", vol_col="Volume"):
+                    n = len(g)
+                    if n == 0:
+                        g["MIDAS_HighAnchor"] = np.nan
+                        g["MIDAS_LowAnchor"]  = np.nan
+                        return g
+
+                    highs = g["High"].to_numpy(dtype=float)
+                    lows  = g["Low"].to_numpy(dtype=float)
+                    v     = g[vol_col].to_numpy(dtype=float)
+                    p     = g[price_col].to_numpy(dtype=float)
+
+                    # Running indices of the most recent max High / min Low (anchors)
+                    hi_idx = np.zeros(n, dtype=int)
+                    lo_idx = np.zeros(n, dtype=int)
+                    cur_hi = -np.inf; cur_hi_i = 0
+                    cur_lo =  np.inf; cur_lo_i = 0
+                    for i in range(n):
+                        if highs[i] >= cur_hi:
+                            cur_hi = highs[i]; cur_hi_i = i
+                        if lows[i]  <= cur_lo:
+                            cur_lo = lows[i];  cur_lo_i = i
+                        hi_idx[i] = cur_hi_i
+                        lo_idx[i] = cur_lo_i
+
+                    # Cumulative sums for O(1) anchored VWAP segments
+                    cumV  = np.cumsum(v)
+                    cumPV = np.cumsum(p * v)
+
+                    def anchored_value(i, a):
+                        vol_seg = cumV[i] - (cumV[a-1] if a > 0 else 0.0)
+                        if vol_seg <= 0:
+                            return np.nan
+                        pv_seg  = cumPV[i] - (cumPV[a-1] if a > 0 else 0.0)
+                        return pv_seg / vol_seg
+
+                    midas_hi = np.fromiter((anchored_value(i, hi_idx[i]) for i in range(n)), dtype=float, count=n)
+                    midas_lo = np.fromiter((anchored_value(i, lo_idx[i]) for i in range(n)), dtype=float, count=n)
+
+                    g["MIDAS_HighAnchor"] = midas_hi  # Bear curve: anchored at running session high
+                    g["MIDAS_LowAnchor"]  = midas_lo  # Bull curve: anchored at running session low
+                    return g
+
+                def add_dynamic_midas(df, price_col="Close", vol_col="Volume", time_col="Time"):
+                    # Reset anchors each trading day if time column is datetime-like
+                    if time_col in df.columns and np.issubdtype(df[time_col].dtype, np.datetime64):
+                        t = df[time_col]
+                        try:
+                            key = t.dt.tz_localize(None).dt.date
+                        except Exception:
+                            key = t.dt.date
+                        return (df.groupby(key, group_keys=False)
+                                .apply(_dynamic_midas_group, price_col=price_col, vol_col=vol_col))
+                    else:
+                        return _dynamic_midas_group(df, price_col=price_col, vol_col=vol_col)
 
                 def detect_tenkan_pawns(df):
                     """
@@ -3340,35 +3395,23 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                    # === MIDAS overlays (Bull/Bear) ==================================
-                    # Assumes you've already added MIDAS_Bull / MIDAS_Bear columns to `intraday`.
+                        # Compute dynamic MIDAS on your intraday dataframe
+                    intraday = add_dynamic_midas(intraday, price_col="Close", vol_col="Volume", time_col="Time")
 
-                    if "MIDAS_Bull" in intraday.columns and intraday["MIDAS_Bull"].notna().any():
-                        midas_bull_trace = go.Scatter(
-                            x=intraday["Time"],
-                            y=intraday["MIDAS_Bull"],
-                            mode="lines",
-                            name="MIDAS Bull",
-                            line=dict(width=2, dash="solid"),
-                            connectgaps=True,
-                            hovertemplate="Time: %{x}<br>MIDAS Bull: %{y:.2f}<extra></extra>",
-                        )
-                        fig.add_trace(midas_bull_trace, row=1, col=1)
+                    # === Plot Dynamic MIDAS (continuous) =========================================
+                    fig.add_trace(go.Scatter(
+                        x=intraday["Time"], y=intraday["MIDAS_LowAnchor"],
+                        mode="lines", name="MIDAS (from Low)",
+                        line=dict(width=2), connectgaps=True,
+                        hovertemplate="Time: %{x}<br>MIDAS (from Low): %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
 
-                    if "MIDAS_Bear" in intraday.columns and intraday["MIDAS_Bear"].notna().any():
-                        midas_bear_trace = go.Scatter(
-                            x=intraday["Time"],
-                            y=intraday["MIDAS_Bear"],
-                            mode="lines",
-                            name="MIDAS Bear",
-                            line=dict(width=2, dash="dash"),
-                            connectgaps=True,
-                            hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>",
-                        )
-                        fig.add_trace(midas_bear_trace, row=1, col=1)
-
-
-
+                    fig.add_trace(go.Scatter(
+                        x=intraday["Time"], y=intraday["MIDAS_HighAnchor"],
+                        mode="lines", name="MIDAS (from High)",
+                        line=dict(width=2, dash="dash"), connectgaps=True,
+                        hovertemplate="Time: %{x}<br>MIDAS (from High): %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
 
 
 
