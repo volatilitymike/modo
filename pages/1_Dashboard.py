@@ -3403,14 +3403,14 @@ if st.sidebar.button("Run Analysis"):
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_LowAnchor"],
                         mode="lines", name="MIDAS Bull (from Low)",
-                        line=dict(width=2), connectgaps=True,
+                        line=dict(width=1.2, color="#10b981"), connectgaps=True,
                         hovertemplate="Time: %{x}<br>MIDAS Bull: %{y:.2f}<extra></extra>"
                     ), row=1, col=1)
 
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_HighAnchor"],
                         mode="lines", name="MIDAS Bear (from High)",
-                        line=dict(width=2, dash="dash"), connectgaps=True,
+                        line=dict(width=1.2, color="#ef4444", dash="dash", connectgaps=True,
                         hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>"
                     ), row=1, col=1)
 
