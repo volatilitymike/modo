@@ -2410,115 +2410,54 @@ if st.sidebar.button("Run Analysis"):
 
                 intraday =  detect_kijun_cross_horses(intraday)
 
-
-                # === MIDAS Bull & Bear Curves =====================================
-                import numpy as np
-
-                def compute_midas(df, anchor_index, price_col="Close", vol_col="Volume"):
+                def add_dynamic_midas(df: pd.DataFrame,
+                                    price_col: str = "F_numeric",
+                                    vol_col: str   = "Volume") -> pd.DataFrame:
                     """
-                    Compute MIDAS curve anchored at a specific index using cumulative VWAP logic.
+                    Adds two columns to *df*:
+                    - MIDAS_Bull : VWAP from the running session LOW
+                    - MIDAS_Bear : VWAP from the running session HIGH
                     """
-                    anchored = df.loc[anchor_index:]
-                    price = anchored[price_col]
-                    vol = anchored[vol_col]
-                    cum_vol = vol.cumsum()
-                    cum_pv = (price * vol).cumsum()
-                    midas_curve = cum_pv / cum_vol
-                    # Fill previous values with NaN to keep alignment
-                    prefix = [np.nan] * anchor_index
-                    return prefix + list(midas_curve)
+                    price = df[price_col].to_numpy(dtype=float)
+                    vol   = df[vol_col].replace(0, 1e-9).to_numpy(dtype=float)  # avoid ÷0
 
-                def detect_pivots(df, lookback=3):
-                    """Return indices of swing highs and lows using a simple window test."""
-                    highs, lows = [], []
-                    for i in range(lookback, len(df) - lookback):
-                        win_high = df["High"].iloc[i - lookback:i + lookback + 1]
-                        win_low = df["Low"].iloc[i - lookback:i + lookback + 1]
-                        if df["High"].iloc[i] == win_high.max():
-                            highs.append(i)
-                        if df["Low"].iloc[i] == win_low.min():
-                            lows.append(i)
-                    return highs, lows
+                    n = len(df)
+                    bull = np.empty(n)
+                    bear = np.empty(n)
 
-                def add_midas_bull_bear(df, price_col="Close", vol_col="Volume"):
-                    """
-                    Add two MIDAS curves:
-                    - MIDAS_Bull anchored from the most recent swing low
-                    - MIDAS_Bear anchored from the most recent swing high
-                    """
-                    highs, lows = detect_pivots(df)
-                    if lows:
-                        last_low = lows[-1]
-                        df["MIDAS_Bull"] = compute_midas(df, last_low, price_col, vol_col)
-                    else:
-                        df["MIDAS_Bull"] = np.nan
+                    # Initialise anchors at first bar
+                    low_anchor_idx  = high_anchor_idx = 0
+                    low_cum_vol     = high_cum_vol    = vol[0]
+                    low_cum_pv      = high_cum_pv     = price[0] * vol[0]
 
-                    if highs:
-                        last_high = highs[-1]
-                        df["MIDAS_Bear"] = compute_midas(df, last_high, price_col, vol_col)
-                    else:
-                        df["MIDAS_Bear"] = np.nan
+                    bull[0] = bear[0] = price[0]      # first value = first close
 
+                    for i in range(1, n):
+                        # -------- update / reset LOW anchor (bull) --------
+                        if df["Low"].iloc[i] < df["Low"].iloc[low_anchor_idx]:
+                            # new session low → reset cumulative sums
+                            low_anchor_idx = i
+                            low_cum_vol = vol[i]
+                            low_cum_pv  = price[i] * vol[i]
+                        else:
+                            low_cum_vol += vol[i]
+                            low_cum_pv  += price[i] * vol[i]
+                        bull[i] = low_cum_pv / low_cum_vol
+
+                        # -------- update / reset HIGH anchor (bear) -------
+                        if df["High"].iloc[i] > df["High"].iloc[high_anchor_idx]:
+                            high_anchor_idx = i
+                            high_cum_vol = vol[i]
+                            high_cum_pv  = price[i] * vol[i]
+                        else:
+                            high_cum_vol += vol[i]
+                            high_cum_pv  += price[i] * vol[i]
+                        bear[i] = high_cum_pv / high_cum_vol
+
+                    df["MIDAS_Bull"] = bull   # anchored at LOW  (bullish support)
+                    df["MIDAS_Bear"] = bear   # anchored at HIGH (bearish resistance)
                     return df
 
-                # Apply MIDAS curves
-                intraday = add_midas_bull_bear(intraday)
-
-                def _dynamic_midas_group(g, price_col="Close", vol_col="Volume"):
-                    n = len(g)
-                    if n == 0:
-                        g["MIDAS_HighAnchor"] = np.nan
-                        g["MIDAS_LowAnchor"]  = np.nan
-                        return g
-
-                    highs = g["High"].to_numpy(dtype=float)
-                    lows  = g["Low"].to_numpy(dtype=float)
-                    v     = g[vol_col].to_numpy(dtype=float)
-                    p     = g[price_col].to_numpy(dtype=float)
-
-                    # Running indices of the most recent max High / min Low (anchors)
-                    hi_idx = np.zeros(n, dtype=int)
-                    lo_idx = np.zeros(n, dtype=int)
-                    cur_hi = -np.inf; cur_hi_i = 0
-                    cur_lo =  np.inf; cur_lo_i = 0
-                    for i in range(n):
-                        if highs[i] >= cur_hi:
-                            cur_hi = highs[i]; cur_hi_i = i
-                        if lows[i]  <= cur_lo:
-                            cur_lo = lows[i];  cur_lo_i = i
-                        hi_idx[i] = cur_hi_i
-                        lo_idx[i] = cur_lo_i
-
-                    # Cumulative sums for O(1) anchored VWAP segments
-                    cumV  = np.cumsum(v)
-                    cumPV = np.cumsum(p * v)
-
-                    def anchored_value(i, a):
-                        vol_seg = cumV[i] - (cumV[a-1] if a > 0 else 0.0)
-                        if vol_seg <= 0:
-                            return np.nan
-                        pv_seg  = cumPV[i] - (cumPV[a-1] if a > 0 else 0.0)
-                        return pv_seg / vol_seg
-
-                    midas_hi = np.fromiter((anchored_value(i, hi_idx[i]) for i in range(n)), dtype=float, count=n)
-                    midas_lo = np.fromiter((anchored_value(i, lo_idx[i]) for i in range(n)), dtype=float, count=n)
-
-                    g["MIDAS_HighAnchor"] = midas_hi  # Bear curve: anchored at running session high
-                    g["MIDAS_LowAnchor"]  = midas_lo  # Bull curve: anchored at running session low
-                    return g
-
-                def add_dynamic_midas(df, price_col="Close", vol_col="Volume", time_col="Time"):
-                    # Reset anchors each trading day if time column is datetime-like
-                    if time_col in df.columns and np.issubdtype(df[time_col].dtype, np.datetime64):
-                        t = df[time_col]
-                        try:
-                            key = t.dt.tz_localize(None).dt.date
-                        except Exception:
-                            key = t.dt.date
-                        return (df.groupby(key, group_keys=False)
-                                .apply(_dynamic_midas_group, price_col=price_col, vol_col=vol_col))
-                    else:
-                        return _dynamic_midas_group(df, price_col=price_col, vol_col=vol_col)
 
                 def detect_tenkan_pawns(df):
                     """
@@ -3395,29 +3334,21 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                            # make sure we computed dynamic midas on F_numeric, not Close
-                    intraday["Volume"] = intraday["Volume"].replace(0, 1e-9)
-                    intraday = add_dynamic_midas(intraday, price_col="F_numeric", vol_col="Volume", time_col="Time")
-                    # Bull = from LOW anchor, Bear = from HIGH anchor
-                    intraday["MIDAS_Bull"] = intraday["MIDAS_LowAnchor"]
-                    intraday["MIDAS_Bear"] = intraday["MIDAS_HighAnchor"]
+                    # ────────── apply to your intraday dataframe ──────────
+                    intraday = add_dynamic_midas(intraday, price_col="F_numeric", vol_col="Volume")
 
-                                        # Plot on the same axis as your F_numeric price
+                    # ────────── plot (green bull, red bear) ───────────────
                     fig.add_trace(go.Scatter(
-                        x=intraday["Time"], y=intraday["MIDAS_LowAnchor"],
-                        mode="lines", name="MIDAS Bull (from Low)",
-                        line=dict(width=1.2, color="#10b981"), connectgaps=True,
-                        hovertemplate="Time: %{x}<br>MIDAS Bull: %{y:.2f}<extra></extra>"
+                        x=intraday["Time"], y=intraday["MIDAS_Bull"],
+                        mode="lines", name="MIDAS Bull (Low anchor)",
+                        line=dict(color="#10b981", width=1.8), connectgaps=True
                     ), row=1, col=1)
 
                     fig.add_trace(go.Scatter(
-                        x=intraday["Time"], y=intraday["MIDAS_HighAnchor"],
-                        mode="lines", name="MIDAS Bear (from High)",
-                        line=dict(width=1.2, color="#ef4444", dash="dash"), connectgaps=True,
-                        hovertemplate="Time: %{x}<br>MIDAS Bear: %{y:.2f}<extra></extra>"
+                        x=intraday["Time"], y=intraday["MIDAS_Bear"],
+                        mode="lines", name="MIDAS Bear (High anchor)",
+                        line=dict(color="#ef4444", width=1.8, dash="dash"), connectgaps=True
                     ), row=1, col=1)
-
-
 
 
                     # (B) Upper Band
