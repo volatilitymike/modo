@@ -3332,25 +3332,6 @@ if st.sidebar.button("Run Analysis"):
                     fig.add_trace(scatter_rvol_strong, row=1, col=1)
                     fig.add_trace(scatter_rvol_moderate, row=1, col=1)
 
-
-
-                    # ────────── apply to your intraday dataframe ──────────
-                    intraday = add_dynamic_midas(intraday, price_col="F_numeric", vol_col="Volume")
-
-                    # ────────── plot (green bull, red bear) ───────────────
-                    fig.add_trace(go.Scatter(
-                        x=intraday["Time"], y=intraday["MIDAS_Bull"],
-                        mode="lines", name="MIDAS Bull (Low anchor)",
-                        line=dict(color="#10b981", width=1.8), connectgaps=True
-                    ), row=1, col=1)
-
-                    fig.add_trace(go.Scatter(
-                        x=intraday["Time"], y=intraday["MIDAS_Bear"],
-                        mode="lines", name="MIDAS Bear (High anchor)",
-                        line=dict(color="#ef4444", width=1.8, dash="dash"), connectgaps=True
-                    ), row=1, col=1)
-
-
                     # (B) Upper Band
                     upper_band = go.Scatter(
                         x=intraday["Time"],
