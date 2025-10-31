@@ -3483,7 +3483,7 @@ if st.sidebar.button("Run Analysis"):
 
                     scatter_adx_alert = go.Scatter(
                         x=intraday.loc[mask_adx_alert, "Time"],
-                        y=intraday.loc[mask_adx_alert, "F_numeric"] + 55,  # Offset for visibility
+                        y=intraday.loc[mask_adx_alert, "F_numeric"] + 13,  # Offset for visibility
                         mode="text",
                         text=intraday.loc[mask_adx_alert, "ADX_Alert"],
                         textposition="bottom center",
@@ -3502,11 +3502,11 @@ if st.sidebar.button("Run Analysis"):
 
                     scatter_std_alert = go.Scatter(
                         x=intraday.loc[mask_std_alert, "Time"],
-                        y=intraday.loc[mask_std_alert, "F_numeric"] + 55,  # Offset above F%
+                        y=intraday.loc[mask_std_alert, "F_numeric"] + 32,  # Offset above F%
                         mode="text",
                         text=intraday.loc[mask_std_alert, "STD_Alert"],
                         textposition="top center",
-                        textfont=dict(size=21),
+                        textfont=dict(size=13),
                         name="F% STD Expansion",
                         hovertemplate="Time: %{x}<br>F%: %{y}<br>STD Alert: %{text}<extra></extra>"
                     )
@@ -3521,7 +3521,7 @@ if st.sidebar.button("Run Analysis"):
                         y=intraday.loc[mask_atr_alert, "F_numeric"]  + 34,  # place below F%
                         mode="text",
                         text=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"],
-                        textfont=dict(size=21),
+                        textfont=dict(size=13),
                         name="ATR Expansion",
                         hoverinfo="text",
                         hovertext=intraday.loc[mask_atr_alert, "ATR_Exp_Alert"]
