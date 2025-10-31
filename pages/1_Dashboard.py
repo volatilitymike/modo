@@ -3395,11 +3395,14 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                    # Use the same series as your chart (F_numeric), not Close
-                    intraday["Volume"] = intraday["Volume"].replace(0, 1e-9)  # avoid zero-volume breaks
+                            # make sure we computed dynamic midas on F_numeric, not Close
+                    intraday["Volume"] = intraday["Volume"].replace(0, 1e-9)
                     intraday = add_dynamic_midas(intraday, price_col="F_numeric", vol_col="Volume", time_col="Time")
+                    # Bull = from LOW anchor, Bear = from HIGH anchor
+                    intraday["MIDAS_Bull"] = intraday["MIDAS_LowAnchor"]
+                    intraday["MIDAS_Bear"] = intraday["MIDAS_HighAnchor"]
 
-                    # Plot on the same axis as your F_numeric price
+                                        # Plot on the same axis as your F_numeric price
                     fig.add_trace(go.Scatter(
                         x=intraday["Time"], y=intraday["MIDAS_LowAnchor"],
                         mode="lines", name="MIDAS Bull (from Low)",
