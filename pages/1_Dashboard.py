@@ -3724,7 +3724,7 @@ if st.sidebar.button("Run Analysis"):
                                     mode="text",
                                     text=["👻"],
                                     textposition="middle center",
-                                    textfont=dict(size=40, color="purple"),
+                                    textfont=dict(size=24, color="purple"),
                                     name="Confirmed Buy TDST Breakout",
                                     hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                                 ),
@@ -3760,7 +3760,7 @@ if st.sidebar.button("Run Analysis"):
                                     mode="text",
                                     text=["🫥"],
                                     textposition="middle center",
-                                    textfont=dict(size=40, color="purple"),
+                                    textfont=dict(size=24, color="purple"),
                                     name="Confirmed Sell TDST Breakdown",
                                     hovertemplate="Time: %{x}<br>F%: %{y}<br>%{text}"
                                 ),
@@ -3848,7 +3848,7 @@ if st.sidebar.button("Run Analysis"):
                         text=swimmer_points["Swimmer_Emoji"],  # Either 🏊🏽‍♂️ or 🦑
                         textposition="bottom center",
                         name="New Lows 🏊🏽‍♂️🦑",
-                        textfont=dict(size=55),
+                        textfont=dict(size=24),
                         showlegend=False
                     )
 
