@@ -2411,6 +2411,58 @@ if st.sidebar.button("Run Analysis"):
                 intraday =  detect_kijun_cross_horses(intraday)
 
 
+                # === MIDAS Bull & Bear Curves =====================================
+                import numpy as np
+
+                def compute_midas(df, anchor_index, price_col="Close", vol_col="Volume"):
+                    """
+                    Compute MIDAS curve anchored at a specific index using cumulative VWAP logic.
+                    """
+                    anchored = df.loc[anchor_index:]
+                    price = anchored[price_col]
+                    vol = anchored[vol_col]
+                    cum_vol = vol.cumsum()
+                    cum_pv = (price * vol).cumsum()
+                    midas_curve = cum_pv / cum_vol
+                    # Fill previous values with NaN to keep alignment
+                    prefix = [np.nan] * anchor_index
+                    return prefix + list(midas_curve)
+
+                def detect_pivots(df, lookback=3):
+                    """Return indices of swing highs and lows using a simple window test."""
+                    highs, lows = [], []
+                    for i in range(lookback, len(df) - lookback):
+                        win_high = df["High"].iloc[i - lookback:i + lookback + 1]
+                        win_low = df["Low"].iloc[i - lookback:i + lookback + 1]
+                        if df["High"].iloc[i] == win_high.max():
+                            highs.append(i)
+                        if df["Low"].iloc[i] == win_low.min():
+                            lows.append(i)
+                    return highs, lows
+
+                def add_midas_bull_bear(df, price_col="Close", vol_col="Volume"):
+                    """
+                    Add two MIDAS curves:
+                    - MIDAS_Bull anchored from the most recent swing low
+                    - MIDAS_Bear anchored from the most recent swing high
+                    """
+                    highs, lows = detect_pivots(df)
+                    if lows:
+                        last_low = lows[-1]
+                        df["MIDAS_Bull"] = compute_midas(df, last_low, price_col, vol_col)
+                    else:
+                        df["MIDAS_Bull"] = np.nan
+
+                    if highs:
+                        last_high = highs[-1]
+                        df["MIDAS_Bear"] = compute_midas(df, last_high, price_col, vol_col)
+                    else:
+                        df["MIDAS_Bear"] = np.nan
+
+                    return df
+
+                # Apply MIDAS curves
+                intraday = add_midas_bull_bear(intraday)
 
 
                 def detect_tenkan_pawns(df):
