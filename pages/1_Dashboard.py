@@ -6628,7 +6628,7 @@ if st.sidebar.button("Run Analysis"):
                     mode="text",
                     text=["🥊"] * len(bear_lethal_rows),
                     textposition="bottom right",
-                    textfont=dict(size=20),
+                    textfont=dict(size=13),
                     showlegend=False,
                     hovertemplate=(
                         "🥊 Bear Lethal Acceleration<br>"
@@ -6645,7 +6645,7 @@ if st.sidebar.button("Run Analysis"):
                     mode="text",
                     text=["🚀"] * len(bull_lethal_rows),
                     textposition="top right",
-                    textfont=dict(size=20),
+                    textfont=dict(size=13),
                     showlegend=False,
                     hovertemplate=(
                         "🚀 Bull Lethal Acceleration<br>"
