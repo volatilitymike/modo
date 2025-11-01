@@ -4953,7 +4953,9 @@ if st.sidebar.button("Run Analysis"):
                     df["PutEntry1"] = bear_anchor_bar.shift(1).fillna(False) & td_dn & slope_dn
                     return df
 
-
+               # compute once
+                if "CallEntry1" not in intraday.columns: intraday = callEntry1(intraday)
+                if "PutEntry1"  not in intraday.columns: intraday = putEntry1(intraday)
 
                 with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=False):
                               fig_ichimoku = go.Figure()
@@ -7275,9 +7277,7 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                            # compute once
-                if "CallEntry1" not in intraday.columns: intraday = callEntry1(intraday)
-                if "PutEntry1"  not in intraday.columns: intraday = putEntry1(intraday)
+
 
                 # --- Plot 🎯 markers on the PRICE subplot (row=1,col=1) ---
                 pmin, pmax = float(intraday[price_col].min()), float(intraday[price_col].max())
