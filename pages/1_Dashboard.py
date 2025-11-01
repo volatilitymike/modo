@@ -4974,7 +4974,7 @@ if st.sidebar.button("Run Analysis"):
                 intraday = callEntry1_lite(intraday, N=3)
                 intraday = putEntry1_lite(intraday, N=3)
 
-                
+
 
                 with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=False):
                               fig_ichimoku = go.Figure()
@@ -5144,7 +5144,28 @@ if st.sidebar.button("Run Analysis"):
                     #     annotation_position="top left"
                     # )
 
+                    --- Plot 🎯 for LITE signals (kept separate) ---
+                    pmin, pmax = float(intraday[price_col].min()), float(intraday[price_col].max())
+                    TARGET_OFF_L = max(0.10 * (pmax - pmin), 0.01)  # slightly different offset from your main 🎯
 
+                    bull_lite = intraday[intraday["CallEntry1_Lite"]]
+                    bear_lite = intraday[intraday["PutEntry1_Lite"]]
+
+                    fig.add_trace(go.Scatter(
+                        x=bull_lite["Time"], y=bull_lite[price_col] + TARGET_OFF_L,
+                        mode="text", text=["🎯"] * len(bull_lite),
+                        textfont=dict(size=24), textposition="top center",
+                        showlegend=False, name="Call Entry 🎯 (Lite)",
+                        hovertemplate="<b>🎯 Call Entry (Lite)</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
+
+                    fig.add_trace(go.Scatter(
+                        x: = bear_lite["Time"], y=bear_lite[price_col] - TARGET_OFF_L,
+                        mode="text", text=["🎯"] * len(bear_lite),
+                        textfont=dict(size=24), textposition="bottom center",
+                        showlegend=False, name="Put Entry 🎯 (Lite)",
+                        hovertemplate="<b>🎯 Put Entry (Lite)</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
 
                     intraday["Tenkan"] = (intraday["High"].rolling(window=9).max() + intraday["Low"].rolling(window=9).min()) / 2
                     intraday["Kijun"] = (intraday["High"].rolling(window=26).max() + intraday["Low"].rolling(window=26).min()) / 2
