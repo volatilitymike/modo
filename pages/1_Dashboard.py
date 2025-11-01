@@ -6009,6 +6009,36 @@ if st.sidebar.button("Run Analysis"):
 
 
 
+                # 🎯 Plot 5-Delta Entry Markers
+                TARGET_OFF = 15  # vertical offset
+
+                # Bullish 🎯
+                bull_hits = intraday[intraday["Bull3DeltaTrigger"]]
+                fig.add_trace(go.Scatter(
+                    x=bull_hits["Time"],
+                    y=bull_hits[price_col] + TARGET_OFF,
+                    mode="text",
+                    text=["🎯"] * len(bull_hits),
+                    textfont=dict(size=28),
+                    textposition="top center",
+                    showlegend=False,
+                    name="Bull Entry 🎯",
+                    hovertemplate="<b>🎯 Bull 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
+
+                # Bearish 🎯
+                bear_hits = intraday[intraday["Bear3DeltaTrigger"]]
+                fig.add_trace(go.Scatter(
+                    x=bear_hits["Time"],
+                    y=bear_hits[price_col] - TARGET_OFF,
+                    mode="text",
+                    text=["🎯"] * len(bear_hits),
+                    textfont=dict(size=28),
+                    textposition="bottom center",
+                    showlegend=False,
+                    name="Bear Entry 🎯",
+                    hovertemplate="<b>🎯 Bear 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
 
 
 
