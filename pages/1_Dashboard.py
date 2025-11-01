@@ -3942,28 +3942,6 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                def callEntry1(df):
-                    """Bullish 5-delta entry: new MIDAS bull + TD Demand cross + positive slope"""
-                    df["CallEntry1"] = (
-                        df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna() &  # anchor event
-                        (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"]) &  # TD Demand cross
-                        (df["MIDAS_Bull"].diff() > 0)  # slope rising
-                    )
-                    return df
-
-
-                def putEntry1(df):
-                    """Bearish 5-delta entry: new MIDAS bear + TD Supply cross + negative slope"""
-                    df["PutEntry1"] = (
-                        df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna() &  # anchor event
-                        (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"]) &  # TD Supply cross
-                        (df["MIDAS_Bear"].diff() < 0)  # slope falling
-                    )
-                    return df
-
-                intraday = callEntry1(intraday)
-                intraday = putEntry1(intraday)
-
 
                 def entryAlert(intraday, threshold=10.0, rvol_threshold=1.2, rvol_lookback=9):
                     """
@@ -4959,6 +4937,28 @@ if st.sidebar.button("Run Analysis"):
 
 
 
+
+                def callEntry1(df):
+                    """Bullish 5-delta entry: new MIDAS bull + TD Demand cross + positive slope"""
+                    df["CallEntry1"] = (
+                        df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna() &  # anchor event
+                        (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"]) &  # TD Demand cross
+                        (df["MIDAS_Bull"].diff() > 0)  # slope rising
+                    )
+                    return df
+
+
+                def putEntry1(df):
+                    """Bearish 5-delta entry: new MIDAS bear + TD Supply cross + negative slope"""
+                    df["PutEntry1"] = (
+                        df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna() &  # anchor event
+                        (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"]) &  # TD Supply cross
+                        (df["MIDAS_Bear"].diff() < 0)  # slope falling
+                    )
+                    return df
+
+                intraday = callEntry1(intraday)
+                intraday = putEntry1(intraday)
 
 
 
