@@ -4955,26 +4955,26 @@ if st.sidebar.button("Run Analysis"):
                     recent_bear_anchor = bear_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
                     df["PutEntry1"] = recent_bear_anchor & td_dn & slope_dn
                     return df
-
+                # --- Entry-1 LITE (anchor + TD cross only; no slope) ---
                 def callEntry1_lite(df, N=3):
-                    """Bullish: new MIDAS_Bull anchor + TD Demand up-cross (no slope)."""
-                    bull_anchor_bar = df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna()
-                    recent_bull_anchor = bull_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
-                    td_up = (df["F_numeric"].shift(1) < df['TD Demand Line F']) & (df["F_numeric"] >= df['TD Demand Line F'])
-                    df["CallEntry1_Lite"] = recent_bull_anchor & td_up
+                    bull_anchor_bar   = df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna()
+                    recent_bull       = bull_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
+                    td_up             = (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"])
+                    df["CallEntry1_Lite"] = recent_bull & td_up
                     return df
 
                 def putEntry1_lite(df, N=3):
-                    """Bearish: new MIDAS_Bear anchor + TD Supply down-cross (no slope)."""
-                    bear_anchor_bar = df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna()
-                    recent_bear_anchor = bear_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
-                    td_dn = (df["F_numeric"].shift(1) > df['TD Supply Line F']) & (df["F_numeric"] <= df['TD Supply Line F'])
-                    df["PutEntry1_Lite"] = recent_bear_anchor & td_dn
+                    bear_anchor_bar   = df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna()
+                    recent_bear       = bear_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
+                    td_dn             = (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"])
+                    df["PutEntry1_Lite"] = recent_bear & td_dn
                     return df
 
-                # compute
+                # compute (independent of your existing flags)
                 intraday = callEntry1_lite(intraday, N=3)
                 intraday = putEntry1_lite(intraday, N=3)
+
+                
 
                 with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=False):
                               fig_ichimoku = go.Figure()
