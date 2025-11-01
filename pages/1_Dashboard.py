@@ -4953,9 +4953,7 @@ if st.sidebar.button("Run Analysis"):
                     df["PutEntry1"] = bear_anchor_bar.shift(1).fillna(False) & td_dn & slope_dn
                     return df
 
-               # compute once
-                if "CallEntry1" not in intraday.columns: intraday = callEntry1(intraday)
-                if "PutEntry1"  not in intraday.columns: intraday = putEntry1(intraday)
+
 
                 with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=False):
                               fig_ichimoku = go.Figure()
@@ -7277,30 +7275,7 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-
-
-                # --- Plot 🎯 markers on the PRICE subplot (row=1,col=1) ---
-                pmin, pmax = float(intraday[price_col].min()), float(intraday[price_col].max())
-                TARGET_OFF = max(0.08 * (pmax - pmin), 0.01)  # keeps markers in view
-
-                bull_hits = intraday[intraday["CallEntry1"]]
-                bear_hits = intraday[intraday["PutEntry1"]]
-
-                fig.add_trace(go.Scatter(
-                    x=bull_hits["Time"], y=bull_hits[price_col] + TARGET_OFF,
-                    mode="text", text=["🎯"] * len(bull_hits),
-                    textfont=dict(size=28), textposition="top center",
-                    showlegend=False, name="Call Entry 🎯",
-                    hovertemplate="<b>🎯 Call Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
-                ), row=1, col=1)
-
-                fig.add_trace(go.Scatter(
-                    x: = bear_hits["Time"], y=bear_hits[price_col] - TARGET_OFF,
-                    mode="text", text=["🎯"] * len(bear_hits),
-                    textfont=dict(size=28), textposition="bottom center",
-                    showlegend=False, name="Put Entry 🎯",
-                    hovertemplate="<b>🎯 Put Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
-                ), row=1, col=1)
+              
 
                 fig.update_yaxes(title_text="Option Value", row=2, col=1)
 
