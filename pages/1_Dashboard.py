@@ -4943,49 +4943,49 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                # with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=True):
-                #               fig_ichimoku = go.Figure()
+                with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=True):
+                              fig_ichimoku = go.Figure()
 
-                #               fig_ichimoku.add_trace(go.Candlestick(
-                #                   x=intraday['Time'],
-                #                   open=intraday['Open'],
-                #                   high=intraday['High'],
-                #                   low=intraday['Low'],
-                #                   close=intraday['Close'],
-                #                   name='Candles'
-                #               ))
+                              fig_ichimoku.add_trace(go.Candlestick(
+                                  x=intraday['Time'],
+                                  open=intraday['Open'],
+                                  high=intraday['High'],
+                                  low=intraday['Low'],
+                                  close=intraday['Close'],
+                                  name='Candles'
+                              ))
 
-                #               fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Tenkan'], line=dict(color='red'), name='Tenkan-sen'))
-                #               fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Kijun'], line=dict(color='green'), name='Kijun-sen'))
-                #               fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['SpanA'], line=dict(color='yellow'), name='Span A'))
-                #               fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['SpanB'], line=dict(color='blue'), name='Span B'))
-                #               fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Chikou'], line=dict(color='purple'), name='Chikou'))
+                              fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Tenkan'], line=dict(color='red'), name='Tenkan-sen'))
+                              fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Kijun'], line=dict(color='green'), name='Kijun-sen'))
+                              fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['SpanA'], line=dict(color='yellow'), name='Span A'))
+                              fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['SpanB'], line=dict(color='blue'), name='Span B'))
+                              fig_ichimoku.add_trace(go.Scatter(x=intraday['Time'], y=intraday['Chikou'], line=dict(color='purple'), name='Chikou'))
 
-                #               fig_ichimoku.add_trace(go.Scatter(
-                #                   x=intraday['Time'],
-                #                   y=intraday['SpanA'],
-                #                   line=dict(width=0),
-                #                   showlegend=False
-                #               ))
+                              fig_ichimoku.add_trace(go.Scatter(
+                                  x=intraday['Time'],
+                                  y=intraday['SpanA'],
+                                  line=dict(width=0),
+                                  showlegend=False
+                              ))
 
-                #               fig_ichimoku.add_trace(go.Scatter(
-                #                   x=intraday['Time'],
-                #                   y=intraday['SpanB'],
-                #                   fill='tonexty',
-                #                   fillcolor='rgba(128, 128, 128, 0.2)',
-                #                   line=dict(width=0),
-                #                   showlegend=False
-                #               ))
+                              fig_ichimoku.add_trace(go.Scatter(
+                                  x=intraday['Time'],
+                                  y=intraday['SpanB'],
+                                  fill='tonexty',
+                                  fillcolor='rgba(128, 128, 128, 0.2)',
+                                  line=dict(width=0),
+                                  showlegend=False
+                              ))
 
-                #               fig_ichimoku.update_layout(
-                #                   title="Ichimoku Candlestick Chart",
-                #                   height=450,
-                #                   width=450,
-                #                   xaxis_rangeslider_visible=False,
-                #                   margin=dict(l=30, r=30, t=40, b=20)
-                #               )
+                              fig_ichimoku.update_layout(
+                                  title="Ichimoku Candlestick Chart",
+                                  height=450,
+                                  width=450,
+                                  xaxis_rangeslider_visible=False,
+                                  margin=dict(l=30, r=30, t=40, b=20)
+                              )
 
-                #               st.plotly_chart(fig_ichimoku, use_container_width=True)
+                              st.plotly_chart(fig_ichimoku, use_container_width=True)
 
                 with st.expander("🪞 MIDAS Anchor Table", expanded=False):
                                     st.dataframe(
@@ -5002,205 +5002,6 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-
-
-                # with st.expander("📉 Pure MIDAS vs Mike Plot", expanded=False):
-                #     fig_midas = go.Figure()
-
-                #     # === PREP: Calculate Smoothed Displacement Change ===
-                #     intraday["Bear_Displacement_Change"] = intraday["Bear_Displacement"].diff()
-                #     intraday["Bear_Displacement_Change_Smooth"] = intraday["Bear_Displacement_Change"].rolling(3).mean()
-
-
-                #     intraday["Bull_Displacement_Change"] = intraday["Bull_Displacement"].diff()
-                #     intraday["Bull_Displacement_Change_Smooth"] = intraday["Bull_Displacement_Change"].rolling(3).mean()
-
-
-                #     # === LAYER 1: Main Price Lines ===
-                #     fig_midas.add_trace(go.Scatter(
-                #         x=intraday["Time"],
-                #         y=intraday["F_numeric"],
-                #         mode="lines",
-                #         name="Mike (F_numeric)",
-                #         line=dict(color="white", width=2),
-                #         yaxis="y"
-                #     ))
-
-                #     fig_midas.add_trace(go.Scatter(
-                #         x=intraday["Time"],
-                #         y=intraday["MIDAS_Bear"],
-                #         mode="lines",
-                #         name="MIDAS_Bear",
-                #         line=dict(color="red", dash="dash"),
-                #         yaxis="y"
-                #     ))
-
-                #     fig_midas.add_trace(go.Scatter(
-                #         x=intraday["Time"],
-                #         y=intraday["MIDAS_Bull"],
-                #         mode="lines",
-                #         name="MIDAS_Bull",
-                #         line=dict(color="green", dash="dot"),
-                #         yaxis="y"
-                #     ))
-
-                #     # # === LAYER 2: Emoji Markers ===
-                #     # bull_hand_rows = intraday[intraday["MIDAS_Bull_Hand"] == "👋🏽"]
-                #     # fig_midas.add_trace(go.Scatter(
-                #     #     x=bull_hand_rows["Time"],
-                #     #     y=bull_hand_rows["MIDAS_Bear"] + 3,
-                #     #     mode="text",
-                #     #     text=["👋🏽"] * len(bull_hand_rows),
-                #     #     textposition="top right",
-                #     #     textfont=dict(size=13),
-                #     #     showlegend=False,
-                #     #     hovertemplate=(
-                #     #         "👋🏽 Bull MIDAS Breakout<br>"
-                #     #         "Time: %{x|%I:%M %p}<br>"
-                #     #         "Above MIDAS_Bear: %{y:.2f}<extra></extra>"
-                #     #     ),
-                #     #     yaxis="y"
-                #     # ))
-
-                #     # bear_glove_rows = intraday[intraday["MIDAS_Bear_Glove"] == "🧤"]
-                #     # fig_midas.add_trace(go.Scatter(
-                #     #     x=bear_glove_rows["Time"],
-                #     #     y=bear_glove_rows["MIDAS_Bull"] - 3,
-                #     #     mode="text",
-                #     #     text=["🧤"] * len(bear_glove_rows),
-                #     #     textposition="bottom right",
-                #     #     textfont=dict(size=13),
-                #     #     showlegend=False,
-                #     #     hovertemplate=(
-                #     #         "🧤 Bear MIDAS Breakdown<br>"
-                #     #         "Time: %{x|%I:%M %p}<br>"
-                #     #         "Below MIDAS_Bull: %{y:.2f}<extra></extra>"
-                #     #     ),
-                #     #     yaxis="y"
-                #     # ))
-
-                #     # === LAYER 3: Smooth Displacement Change (Separate Panel) ===
-                #     fig_midas.add_trace(go.Scatter(
-                #         x=intraday["Time"],
-                #         y=intraday["Bear_Displacement_Change_Smooth"],
-                #         mode="lines",
-                #         name="Bear Displacement Δ (Smooth)",
-                #         line=dict(color="orangered", width=2, dash="dot"),
-                #         yaxis="y2"
-                #     ))
-
-                #     # === FULL LAYOUT ===
-                #     fig_midas.update_layout(
-                #         height=600,
-                #         plot_bgcolor="black",
-                #         paper_bgcolor="black",
-                #         font=dict(color="white"),
-                #         title="MIDAS Anchors vs Mike + Displacement Momentum",
-                #         xaxis=dict(
-                #             title="Time",
-                #             domain=[0, 1],
-                #             anchor="y"
-                #         ),
-                #         yaxis=dict(
-                #             title="Price",
-                #             side="left",
-                #             domain=[0.25, 1]  # Top 75% for main plot
-                #         ),
-                #         yaxis2=dict(
-                #             title="Displacement Δ",
-                #             side="left",
-                #             domain=[0, 0.2],  # Bottom 20% for displacement plot
-                #             showgrid=False
-                #         ),
-                #         legend=dict(
-                #             orientation="h",
-                #             yanchor="bottom",
-                #             y=1.02,
-                #             xanchor="right",
-                #             x=1
-                #         ),
-                #         margin=dict(t=60, b=40)
-                #     )
-
-                #     fig_midas.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["Bull_Displacement_Change_Smooth"],
-                #     mode="lines",
-                #     name="Bull Displacement Δ (Smooth)",
-                #     line=dict(color="lightgreen", width=2, dash="dot"),
-                #     yaxis="y2"
-                #     ))
-
-                #     st.plotly_chart(fig_midas, use_container_width=True)
-
-
-
-                # with st.expander("🧠 Mike's Physics Engine – Displacement Plot", expanded=False):
-                #     fig_vector = make_subplots(
-                #     rows=4, cols=1,
-                #     shared_xaxes=True,
-                #     vertical_spacing=0.03,
-                #     row_heights=[0.35, 0.25, 0.2, 0.2],
-                #     subplot_titles=(
-                #         "Displacement (Mike)",
-                #         "Vector Displacement %",
-                #         "Vector Velocity",
-                #         "Vector Force"
-                #     )
-                # )
-
-                # # Panel 1: Mike's Displacement
-                # fig_vector.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["F_numeric"],
-                #     mode="lines",
-                #     name="Unit%",
-                #     line=dict(color="dodgerblue", width=2),
-                #     hovertemplate="Time: %{x}<br>Displacement: %{y:.1f}<extra></extra>"
-                # ), row=1, col=1)
-
-                # # Panel 2: Vector%
-                # fig_vector.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["Vector%"],
-                #     mode="lines+markers",
-                #     name="Vector%",
-                #     line=dict(color="cyan", dash="dot"),
-                #     hovertemplate="Vector%: %{y:.1f}%<extra></extra>"
-                # ), row=2, col=1)
-
-                # # Panel 3: Velocity
-                # fig_vector.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["Velocity"],
-                #     mode="lines+markers",
-                #     name="Velocity",
-                #     line=dict(color="orange"),
-                #     hovertemplate="Velocity: %{y:.1f}%<extra></extra>"
-                # ), row=3, col=1)
-
-                # # Panel 4: Vector Force
-                # fig_vector.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["Vector Force"],
-                #     mode="lines+markers",
-                #     name="Vector Force",
-                #     line=dict(color="crimson"),
-                #     hovertemplate="Force: %{y:.1f}<extra></extra>"
-                # ), row=4, col=1)
-
-                # fig_vector.update_layout(
-                #     height=900,
-                #     plot_bgcolor="black",
-                #     paper_bgcolor="black",
-                #     font=dict(color="white"),
-                #     title="📐 Mike's Full Physics Engine: Displacement, Velocity, and Force",
-                #     xaxis4=dict(title="Time"),
-                #     legend=dict(orientation="h", y=1.02, x=1, xanchor="right"),
-                #     margin=dict(t=60, b=40)
-                # )
-
-                # st.plotly_chart(fig_displacement, use_container_width=True)
 
 
 
@@ -7619,7 +7420,7 @@ if st.sidebar.button("Run Analysis"):
                 fig.update_layout(
                     title=f"{t} – VOLMIKE.COM – {start_date.strftime('%Y-%m-%d')}",
                     margin=dict(l=30, r=30, t=50, b=30),
-                    showlegend=False,  # ← hides the legend completely
+                    showlegend=False  # ← hides the legend completely
 
                     height=1800,  # Increase overall figure height (default ~450-600)
 
