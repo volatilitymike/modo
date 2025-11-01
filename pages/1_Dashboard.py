@@ -4938,28 +4938,20 @@ if st.sidebar.button("Run Analysis"):
 
 
 
+                # --- 5-Delta entry flags (anchor prev bar + TD cross this bar + slope confirm) ---
                 def callEntry1(df):
-                    """Bullish 5-delta entry: new MIDAS bull + TD Demand cross + positive slope"""
-                    df["CallEntry1"] = (
-                        df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna() &  # anchor event
-                        (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"]) &  # TD Demand cross
-                        (df["MIDAS_Bull"].diff() > 0)  # slope rising
-                    )
+                    bull_anchor_bar = df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna()
+                    td_up = (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"])
+                    slope_up = df["MIDAS_Bull"].diff() > 0
+                    df["CallEntry1"] = bull_anchor_bar.shift(1).fillna(False) & td_up & slope_up
                     return df
-
 
                 def putEntry1(df):
-                    """Bearish 5-delta entry: new MIDAS bear + TD Supply cross + negative slope"""
-                    df["PutEntry1"] = (
-                        df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna() &  # anchor event
-                        (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"]) &  # TD Supply cross
-                        (df["MIDAS_Bear"].diff() < 0)  # slope falling
-                    )
+                    bear_anchor_bar = df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna()
+                    td_dn = (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"])
+                    slope_dn = df["MIDAS_Bear"].diff() < 0
+                    df["PutEntry1"] = bear_anchor_bar.shift(1).fillna(False) & td_dn & slope_dn
                     return df
-
-                intraday = callEntry1(intraday)
-                intraday = putEntry1(intraday)
-
 
 
 
@@ -7283,124 +7275,32 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                # # intraday["SpanA_F"] = ((intraday["SpanA"] - prev_close) / prev_close) * 10000
-                # # intraday["SpanB_F"] = ((intraday["SpanB"] - prev_close) / prev_close) * 10000
+                            # compute once
+                if "CallEntry1" not in intraday.columns: intraday = callEntry1(intraday)
+                if "PutEntry1"  not in intraday.columns: intraday = putEntry1(intraday)
 
+                # --- Plot 🎯 markers on the PRICE subplot (row=1,col=1) ---
+                pmin, pmax = float(intraday[price_col].min()), float(intraday[price_col].max())
+                TARGET_OFF = max(0.08 * (pmax - pmin), 0.01)  # keeps markers in view
 
+                bull_hits = intraday[intraday["CallEntry1"]]
+                bear_hits = intraday[intraday["PutEntry1"]]
 
-                #                     # Span A – Yellow Line
-                # span_a_line = go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["SpanA_F"],
-                #     mode="lines",
-                #     line=dict(color="yellow", width=0.4),
-                #     name="Span A (F%)"
-                # )
-                # fig.add_trace(span_a_line, row=1, col=1)
+                fig.add_trace(go.Scatter(
+                    x=bull_hits["Time"], y=bull_hits[price_col] + TARGET_OFF,
+                    mode="text", text=["🎯"] * len(bull_hits),
+                    textfont=dict(size=28), textposition="top center",
+                    showlegend=False, name="Call Entry 🎯",
+                    hovertemplate="<b>🎯 Call Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
 
-                # # Span B – Blue Line
-                # span_b_line = go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["SpanB_F"],
-                #     mode="lines",
-                #     line=dict(color="rgba(0, 150, 255, 0.4)", width=0.5),
-                #     name="Span B (F%)"
-                # )
-                # fig.add_trace(span_b_line, row=1, col=1)
-
-                # # Invisible SpanA for cloud base
-                # fig.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["SpanA_F"],
-                #     line=dict(width=0),
-                #     mode='lines',
-                #     showlegend=False
-                # ), row=1, col=1)
-
-                # # SpanB with fill → grey Kumo
-                # fig.add_trace(go.Scatter(
-                #     x=intraday["Time"],
-                #     y=intraday["SpanB_F"],
-                #     fill='tonexty',
-                #     fillcolor='rgba(20, 20, 30, 0.10)',  # transparent grey
-                #     line=dict(width=0),
-                #     mode='lines',
-                #     name='Kumo Cloud'
-                # ), row=1, col=1)
-
-                # # if yva_min is not None and yva_max is not None:
-                #     # Show in text
-                #     st.markdown(f"**📘 Yesterday’s Value Area**: {yva_min} → {yva_max}")
-                # if prev_close:
-                #     range_f_pct = round((prev_high - prev_low) / prev_close * 100, 1)
-                #     st.markdown(f"📏 Yesterday’s Range: **{prev_low:.2f} → {prev_high:.2f}** ({yesterday_range_str} pts | {range_f_pct}%)")
-
-                      # Show YVA and Yesterday Range
-                # if yva_min is not None and yva_max is not None:
-                #     st.markdown(f"**📘 Yesterday’s Value Area**: {yva_min:.2f} → {yva_max:.2f}")
-                # if prev_close:
-                #     range_f_pct = round((prev_high - prev_low) / prev_close * 100, 1)
-                #     st.markdown(f"📏 Yesterday’s Range: **{prev_low:.2f} → {prev_high:.2f}** ({yesterday_range_str} pts | {range_f_pct}%)")
-
-                # # 🧭 Opening Position vs YVA
-                # if yva_min is not None and yva_max is not None:
-                #     opening_price = intraday["Close"].iloc[0]
-
-                #     if yva_min < opening_price < yva_max:
-                #         yva_position_msg = "✅ Opened **within** Yesterday's Value Area"
-                #     elif opening_price >= yva_max:
-                #         yva_position_msg = "⬆️ Opened **above** Yesterday's Value Area"
-                #     elif opening_price <= yva_min:
-                #         yva_position_msg = "⬇️ Opened **below** Yesterday's Value Area"
-                #     else:
-                #         yva_position_msg = "⚠️ Could not determine opening position relative to YVA"
-
-                #     st.markdown(f"### {yva_position_msg}")
-
-
-                    #   # ✅ Detect Initiative Breakout from Yesterday’s Value Area
-                    # if yva_min is not None and yva_max is not None and not intraday.empty:
-                    #     opening_price = intraday["Close"].iloc[0]
-                    #     opened_inside_yva = yva_min < opening_price < yva_max
-
-                    #     # First 30 min = first 6 bars on 5-min timeframe
-                    #     first_6 = intraday.iloc[:6]
-                    #     broke_above_yva = first_6["Close"].max() > yva_max
-                    #     broke_below_yva = first_6["Close"].min() < yva_min
-
-                    #     if opened_inside_yva:
-                    #         if broke_above_yva:
-                    #             st.markdown("🚀 **Breakout Alert: Opened *inside* YVA → Broke *above* within 30 min**")
-                    #         elif broke_below_yva:
-                    #             st.markdown("🔻 **Breakout Alert: Opened *inside* YVA → Broke *below* within 30 min**")
-                    #         else:
-                    #             st.markdown("🟨 Opened inside YVA – No early breakout")
-
-                    #     else:
-                    #         st.markdown("🟦 Market did *not* open inside YVA")
-
-                        # ✅ Acceptance Outside of Previous Day's Range
-                        # When price opens above yesterday's high OR below yesterday's low
-                        # AND remains there throughout the first 30 minutes
-
-                    # opened_above_yh = opening_price > prev_high
-                    # opened_below_yl = opening_price < prev_low
-
-                    # first_6 = intraday.iloc[:6]
-                    # stayed_above_yh = (first_6["Close"] > prev_high).all()
-                    # stayed_below_yl = (first_6["Close"] < prev_low).all()
-
-                    # if opened_above_yh and stayed_above_yh:
-                    #     st.markdown("🟢 **ACCEPTANCE ABOVE Yesterday’s High: Breakout confirmed**")
-
-                    # elif opened_below_yl and stayed_below_yl:
-                    #     st.markdown("🔴 **ACCEPTANCE BELOW Yesterday’s Low: Breakdown confirmed**")
-
-                    # elif opened_above_yh or opened_below_yl:
-                    #     st.markdown("🟠 **Open Outside Range but NOT Accepted (possible fade or retest)**")
-
-
-
+                fig.add_trace(go.Scatter(
+                    x: = bear_hits["Time"], y=bear_hits[price_col] - TARGET_OFF,
+                    mode="text", text=["🎯"] * len(bear_hits),
+                    textfont=dict(size=28), textposition="bottom center",
+                    showlegend=False, name="Put Entry 🎯",
+                    hovertemplate="<b>🎯 Put Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                ), row=1, col=1)
 
                 fig.update_yaxes(title_text="Option Value", row=2, col=1)
 
