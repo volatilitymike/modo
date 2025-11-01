@@ -5271,8 +5271,13 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                    # 🎯 Plot 5-Delta Entry (CallEntry1 / PutEntry1)
-                    TARGET_OFF = 15  # visual offset for emoji placement
+                                    # 1) Ensure the flags exist
+                    if "CallEntry1" not in intraday: intraday = callEntry1(intraday)
+                    if "PutEntry1" not in intraday: intraday = putEntry1(intraday)
+
+                    # 2) Dynamic vertical offset so markers stay in view
+                    pmin, pmax = intraday[price_col].min(), intraday[price_col].max()
+                    TARGET_OFF = max(0.08 * (pmax - pmin), 0.01)  # ~8% of range, min tiny cushion
 
                     # Bullish (CallEntry1)
                     bull_hits = intraday[intraday["CallEntry1"]]
