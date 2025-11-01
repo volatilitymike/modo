@@ -3942,7 +3942,27 @@ if st.sidebar.button("Run Analysis"):
 
 
 
+                def callEntry1(df):
+                    """Bullish 5-delta entry: new MIDAS bull + TD Demand cross + positive slope"""
+                    df["CallEntry1"] = (
+                        df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna() &  # anchor event
+                        (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"]) &  # TD Demand cross
+                        (df["MIDAS_Bull"].diff() > 0)  # slope rising
+                    )
+                    return df
 
+
+                def putEntry1(df):
+                    """Bearish 5-delta entry: new MIDAS bear + TD Supply cross + negative slope"""
+                    df["PutEntry1"] = (
+                        df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna() &  # anchor event
+                        (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"]) &  # TD Supply cross
+                        (df["MIDAS_Bear"].diff() < 0)  # slope falling
+                    )
+                    return df
+
+                intraday = callEntry1(intraday)
+                intraday = putEntry1(intraday)
 
 
                 def entryAlert(intraday, threshold=10.0, rvol_threshold=1.2, rvol_lookback=9):
@@ -6008,37 +6028,6 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-
-                # 🎯 Plot 5-Delta Entry Markers
-                TARGET_OFF = 15  # vertical offset
-
-                # Bullish 🎯
-                bull_hits = intraday[intraday["Bull3DeltaTrigger"]]
-                fig.add_trace(go.Scatter(
-                    x=bull_hits["Time"],
-                    y=bull_hits[price_col] + TARGET_OFF,
-                    mode="text",
-                    text=["🎯"] * len(bull_hits),
-                    textfont=dict(size=28),
-                    textposition="top center",
-                    showlegend=False,
-                    name="Bull Entry 🎯",
-                    hovertemplate="<b>🎯 Bull 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
-                ), row=1, col=1)
-
-                # Bearish 🎯
-                bear_hits = intraday[intraday["Bear3DeltaTrigger"]]
-                fig.add_trace(go.Scatter(
-                    x=bear_hits["Time"],
-                    y=bear_hits[price_col] - TARGET_OFF,
-                    mode="text",
-                    text=["🎯"] * len(bear_hits),
-                    textfont=dict(size=28),
-                    textposition="bottom center",
-                    showlegend=False,
-                    name="Bear Entry 🎯",
-                    hovertemplate="<b>🎯 Bear 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
-                ), row=1, col=1)
 
 
 
