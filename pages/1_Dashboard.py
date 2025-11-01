@@ -4938,21 +4938,23 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-                # --- 5-Delta entry flags (anchor prev bar + TD cross this bar + slope confirm) ---
                 def callEntry1(df):
                     bull_anchor_bar = df["MIDAS_Bull"].notna() & df["MIDAS_Bull"].shift(1).isna()
-                    td_up = (df["F_numeric"].shift(1) < df["TD Demand Line F"]) & (df["F_numeric"] >= df["TD Demand Line F"])
+                    td_up  = (df["F_numeric"].shift(1) < df['TD Demand Line F']) & (df["F_numeric"] >= df['TD Demand Line F'])
                     slope_up = df["MIDAS_Bull"].diff() > 0
-                    df["CallEntry1"] = bull_anchor_bar.shift(1).fillna(False) & td_up & slope_up
+                    N = 3
+                    recent_bull_anchor = bull_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
+                    df["CallEntry1"] = recent_bull_anchor & td_up & slope_up
                     return df
 
                 def putEntry1(df):
                     bear_anchor_bar = df["MIDAS_Bear"].notna() & df["MIDAS_Bear"].shift(1).isna()
-                    td_dn = (df["F_numeric"].shift(1) > df["TD Supply Line F"]) & (df["F_numeric"] <= df["TD Supply Line F"])
+                    td_dn  = (df["F_numeric"].shift(1) > df['TD Supply Line F']) & (df["F_numeric"] <= df['TD Supply Line F'])
                     slope_dn = df["MIDAS_Bear"].diff() < 0
-                    df["PutEntry1"] = bear_anchor_bar.shift(1).fillna(False) & td_dn & slope_dn
+                    N = 3
+                    recent_bear_anchor = bear_anchor_bar.shift(1).rolling(N, min_periods=1).max().fillna(False).astype(bool)
+                    df["PutEntry1"] = recent_bear_anchor & td_dn & slope_dn
                     return df
-
 
 
                 with st.expander("🕯️ Hidden Candlestick + Ichimoku View", expanded=False):
@@ -7275,7 +7277,7 @@ if st.sidebar.button("Run Analysis"):
 
 
 
-              
+
 
                 fig.update_yaxes(title_text="Option Value", row=2, col=1)
 
