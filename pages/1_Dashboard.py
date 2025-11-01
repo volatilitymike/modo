@@ -5270,6 +5270,39 @@ if st.sidebar.button("Run Analysis"):
                     fig.add_trace(tenkan_line, row=1, col=1)
 
 
+
+                    # 🎯 Plot 5-Delta Entry (CallEntry1 / PutEntry1)
+                    TARGET_OFF = 15  # visual offset for emoji placement
+
+                    # Bullish (CallEntry1)
+                    bull_hits = intraday[intraday["CallEntry1"]]
+                    fig.add_trace(go.Scatter(
+                        x=bull_hits["Time"],
+                        y=bull_hits[price_col] + TARGET_OFF,
+                        mode="text",
+                        text=["🎯"] * len(bull_hits),
+                        textfont=dict(size=28),
+                        textposition="top center",
+                        showlegend=False,
+                        name="Call Entry 🎯",
+                        hovertemplate="<b>🎯 Call Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
+
+                    # Bearish (PutEntry1)
+                    bear_hits = intraday[intraday["PutEntry1"]]
+                    fig.add_trace(go.Scatter(
+                        x=bear_hits["Time"],
+                        y=bear_hits[price_col] - TARGET_OFF,
+                        mode="text",
+                        text=["🎯"] * len(bear_hits),
+                        textfont=dict(size=28),
+                        textposition="bottom center",
+                        showlegend=False,
+                        name="Put Entry 🎯",
+                        hovertemplate="<b>🎯 Put Entry 5-Delta</b><br>Time: %{x}<br>Price: %{y:.2f}<extra></extra>"
+                    ), row=1, col=1)
+
+
                     # intraday["SpanA_F"] = ((intraday["SpanA"] - prev_close) / prev_close) * 10000
                     # intraday["SpanB_F"] = ((intraday["SpanB"] - prev_close) / prev_close) * 10000
 
