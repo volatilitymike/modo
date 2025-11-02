@@ -5144,7 +5144,7 @@ if st.sidebar.button("Run Analysis"):
                     #     annotation_position="top left"
                     # )
 
-                    --- Plot 🎯 for LITE signals (kept separate) ---
+                    
                     pmin, pmax = float(intraday[price_col].min()), float(intraday[price_col].max())
                     TARGET_OFF_L = max(0.10 * (pmax - pmin), 0.01)  # slightly different offset from your main 🎯
 
